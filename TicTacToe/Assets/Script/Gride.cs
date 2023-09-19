@@ -11,6 +11,8 @@ public class Gride : MonoBehaviour
 
 	public Sprite XSprite;
 	public Sprite OSprite;
+	public Sprite EmptySprite;
+	public GameObject GrideEdge;
 
 	SpriteRenderer SpriteRenderer;
 
@@ -19,9 +21,11 @@ public class Gride : MonoBehaviour
 
 	void Start()
 	{
-		pieceType = Utility.PieceType.Empty;
+		pieceType = PieceType.Empty;
 		SpriteRenderer = GetComponent<SpriteRenderer>();
-	}
+        updatePieceType(pieceType);
+        GrideEdge.SetActive(false);
+    }
 
 	// Update is called once per frame
 	void Update()
@@ -32,7 +36,9 @@ public class Gride : MonoBehaviour
 	public void setPieceType(PieceType pieceType)
 	{
 		this.pieceType = pieceType;
-	}
+        updatePieceType(pieceType);
+
+    }
 
 	public void updatePieceType(PieceType pieceTyp)
 	{
@@ -45,5 +51,24 @@ public class Gride : MonoBehaviour
 		{
 			SpriteRenderer.sprite = XSprite;
 		}
+		else
+		{
+			SpriteRenderer.sprite = EmptySprite;
+		}
 	}
+
+	public void onPoint()
+	{
+		GrideEdge.SetActive(true);
+	}
+
+	public void onExit()
+	{
+        GrideEdge.SetActive(false);
+    }
+	public void onClick()
+	{
+        setPieceType(PieceType.X);
+
+    }
 }
