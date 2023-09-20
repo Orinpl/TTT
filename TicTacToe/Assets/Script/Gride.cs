@@ -18,6 +18,7 @@ public class Gride : MonoBehaviour
 
 	public int PosX;
 	public int PosY;
+	public int Idx;
 
 	void Start()
 	{
@@ -33,7 +34,12 @@ public class Gride : MonoBehaviour
 
 	}
 
-	public void setPieceType(PieceType pieceType)
+    public void resetGride()
+    {
+        
+    }
+
+    public void setPieceType(PieceType pieceType)
 	{
 		this.pieceType = pieceType;
         updatePieceType(pieceType);
@@ -68,7 +74,25 @@ public class Gride : MonoBehaviour
     }
 	public void onClick()
 	{
-        setPieceType(PieceType.X);
 
+        setPieceType(getCurClickPieceType());
+		GameManager.Instance.nextRound();
+    }
+
+	public PieceType getCurClickPieceType()
+	{
+		Player curPlayer = GameManager.Instance.RoundMgr.getCntPlayer();
+		if(curPlayer==Player.P1)
+		{
+			return PieceType.O;
+		}
+		else if(curPlayer==Player.P2)
+		{
+			return PieceType.X;
+		}
+		else
+		{
+			return PieceType.Empty;
+		}
     }
 }
