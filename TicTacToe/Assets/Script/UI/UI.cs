@@ -12,6 +12,7 @@ public class UI : MonoBehaviour
     public Button VSMode;
     public Button AIMode;
     public Button Restart;
+    public Button Exit;
     public GameObject ModeInfo;
 
     void Start()
@@ -19,6 +20,7 @@ public class UI : MonoBehaviour
         VSMode.onClick.AddListener(setVSMode);
         AIMode.onClick.AddListener(setAIMode);
         Restart.onClick.AddListener(restartGame);
+        Exit.onClick.AddListener(exitGame);
     }
 
     // Update is called once per frame
@@ -85,5 +87,10 @@ public class UI : MonoBehaviour
     {
         GameManager.Instance.resetGame();
         GameManager.Instance.resetGame();
+    }
+
+    public void exitGame()
+    {
+        Application.Quit();
     }
 }
