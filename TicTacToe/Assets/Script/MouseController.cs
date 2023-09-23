@@ -28,13 +28,17 @@ public class MouseController : MonoBehaviour
             Gride gride = gameObject.GetComponent<Gride>();
             if(gride!=curGride)
             {
-                Debug.Log("Hit object with tag: " + hit.collider.tag);
+                //Debug.Log("Hit object with tag: " + hit.collider.tag);
                 curGride?.onExit();
                 curGride = gride;
                 curGride.onPoint();
             }
             if (Input.GetMouseButtonDown(0))
             {
+                if(GameManager.Instance.isWin||GameManager.Instance.isDraw)
+                {
+                    return;
+                }
                 curGride.onClick();
             }
         }

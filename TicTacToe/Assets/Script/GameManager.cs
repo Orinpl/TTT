@@ -41,6 +41,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            print("wait to restart...");
+            resetGame();
+        }
     }
 
     public void startGame(Mode mode)
@@ -56,8 +61,10 @@ public class GameManager : MonoBehaviour
     public void resetGame()
     {
         RoundMgr.resetRound();
-        Checkerboard.resetCheckerboard();
-
+        Checkerboard.resetGrides();
+        isWin = false;
+        isDraw = false;
+        winner = Player.None;
     }
 
     public void exitGame()
@@ -69,7 +76,7 @@ public class GameManager : MonoBehaviour
     {
         isWin = true;
         isDraw = false;
-        Debug.Log("P" + player + "win!");
+        Debug.Log(player + "win!");
     }
 
     public void drawGame()
@@ -81,6 +88,7 @@ public class GameManager : MonoBehaviour
 
     public bool checkWin()
     {
+        print("check win...");
         PieceType pieceType = Checkerboard.checkWin();
         if(pieceType == PieceType.O)
         {
@@ -108,11 +116,11 @@ public class GameManager : MonoBehaviour
         checkWin();
         if (isWin)
         {
-            
+            //waitToRestart();
         }
         else if(isDraw)
         {
-
+            //waitToRestart();
         }
         else
         {
@@ -121,8 +129,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator waitToRestart()
+    //IEnumerator waitToRestart()
+    //{
+    //    yield return new WaitForSeconds(2);
+    //}
+
+    public void restartGame()
     {
-        yield return new WaitForSeconds(2);
+
     }
 }

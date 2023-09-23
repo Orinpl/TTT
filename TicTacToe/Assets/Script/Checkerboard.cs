@@ -16,17 +16,21 @@ public class Checkerboard : MonoBehaviour
 		}
 		Instance = this;
         grides = new List<PieceType> ();
-        checkerboardGrides = new List<Gride> ();
-        resetGrides();
-
+        //resetGrides();
+        for(int i = 0; i < 9; i++)
+        {
+            grides.Add (PieceType.Empty);
+            checkerboardGrides[i].Idx = i;
+        }
     }
 
-	void resetGrides()
+	public void resetGrides()
 	{
 		grides.Clear();
         foreach(Gride gride in checkerboardGrides)
         {
             gride.resetGride();
+            grides.Add(PieceType.Empty);
         }
     }
 
@@ -42,18 +46,18 @@ public class Checkerboard : MonoBehaviour
 
     }
 
-    public void resetCheckerboard()
-    {
-        foreach(PieceType pieceType in grides)
-        {
+    //public void resetCheckerboard()
+    //{
+    //    foreach (Gride gride in checkerboardGrides)
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
     public PieceType checkWin()
     {
         // ¼ì²éÐÐ
-        for (int i = 0; i < 9; i += 3)
+        for (int i = 0; i < 7; i += 3)
         {
             if (grides[i] != PieceType.Empty && grides[i] == grides[i + 1] && grides[i] == grides[i + 2])
             {

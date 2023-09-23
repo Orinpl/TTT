@@ -6,8 +6,8 @@ using Utility;
 public class Gride : MonoBehaviour
 {
 	// Start is called before the first frame update
-	public Checkerboard Checkerboard;
-	public PieceType pieceType;
+	//public Checkerboard Checkerboard;
+	public PieceType curPieceType;
 
 	public Sprite XSprite;
 	public Sprite OSprite;
@@ -22,9 +22,9 @@ public class Gride : MonoBehaviour
 
 	void Start()
 	{
-		pieceType = PieceType.Empty;
+		curPieceType = PieceType.Empty;
 		SpriteRenderer = GetComponent<SpriteRenderer>();
-        updatePieceType(pieceType);
+        updatePieceType(curPieceType);
         GrideEdge.SetActive(false);
     }
 
@@ -36,12 +36,13 @@ public class Gride : MonoBehaviour
 
     public void resetGride()
     {
+		setPieceType(PieceType.Empty);
         
     }
 
     public void setPieceType(PieceType pieceType)
 	{
-		this.pieceType = pieceType;
+		this.curPieceType = pieceType;
         updatePieceType(pieceType);
 
     }
@@ -61,7 +62,7 @@ public class Gride : MonoBehaviour
 		{
 			SpriteRenderer.sprite = EmptySprite;
 		}
-	}
+    }
 
 	public void onPoint()
 	{
@@ -74,9 +75,12 @@ public class Gride : MonoBehaviour
     }
 	public void onClick()
 	{
-
-        setPieceType(getCurClickPieceType());
-		GameManager.Instance.nextRound();
+		PieceType pieceTyp = getCurClickPieceType();
+		if(curPieceType!=PieceType.Empty)
+			return;
+        setPieceType(pieceTyp);
+        Checkerboard.Instance.grides[Idx] = pieceTyp;
+        GameManager.Instance.nextRound();
     }
 
 	public PieceType getCurClickPieceType()
