@@ -9,6 +9,11 @@ public class AI : MonoBehaviour
 
     public static AI Instance;
 
+    public Player AIPlayer;
+
+    public PieceType AIPieceType { get { return AIPlayer == Player.P1 ? PieceType.O : PieceType.X; } }
+    public PieceType PlayerPieceType { get { return AIPlayer == Player.P1 ? PieceType.X : PieceType.O; } }
+
     void Start()
     {
         if(Instance!=null)
@@ -16,26 +21,26 @@ public class AI : MonoBehaviour
             Destroy(Instance);
         }
         Instance = this;
-
+        AIPlayer = Player.P2;
     }
 
     public int getNextPoint()
     {
-        List<PieceType> grides = new List<PieceType>();
-        foreach(PieceType pieceType in GameManager.Instance.Checkerboard.grides)
-        {
-            grides.Add(pieceType);
-        }
+
+        PieceType[] grides = Checkerboard.Instance.grides.ToArray();
 
         // 极小化极大算法
         int bestScore = int.MinValue;
         int bestMove = -1;
-        for (int i = 0; i < grides.Count; i++)
+        for (int i = 0; i < grides.Length; i++)
         {
             if (grides[i] == PieceType.Empty)
             {
-                grides[i] = PieceType.O;
-                int score = Minimax(grides, 0, false, int.MinValue, int.MaxValue);
+                grides[i] = AIPieceType;
+                int alpha = int.MinValue;
+                int beta = int.MaxValue;
+                int score = Minimax(grides, 0, PlayerPieceType, alpha, beta);
+                //print("idx:"+i+" score:"+score);
                 grides[i] = PieceType.Empty;
                 if (score > bestScore)
                 {
@@ -49,31 +54,33 @@ public class AI : MonoBehaviour
     }
 
     // 极小化极大算法
-    private int Minimax(List<PieceType> grides, int depth, bool isMaximizingPlayer, int alpha, int beta)
+    private int Minimax(PieceType[] grides, int depth, PieceType aiWinType, int alpha, int beta)
     {
-        PieceType winner = Checkerboard.Instance.checkWin();
+        PieceType winner = Checkerboard.Instance.checkWin(grides);
         if (winner != PieceType.Empty)
         {
-            return (winner == PieceType.O) ? 1 : -1;
+            return (winner == AIPieceType) ? 1 : -1;
         }
 
-        if (GameManager.Instance.isDraw)
+        bool isFull = Checkerboard.Instance.isFull(grides);
+        if (isFull&&winner == PieceType.Empty)
         {
             return 0;
         }
 
-        if (isMaximizingPlayer)
+        if (aiWinType == AIPieceType)
         {
             int bestScore = int.MinValue;
-            for (int i = 0; i < grides.Count; i++)
+            for (int i = 0; i < grides.Length; i++)
             {
                 if (grides[i] == PieceType.Empty)
                 {
-                    grides[i] = PieceType.O;
-                    int score = Minimax(grides, depth + 1, false, alpha, beta);
+                    grides[i] = AIPieceType;
+                    int score = Minimax(grides, depth + 1, PlayerPieceType, alpha, beta);
                     grides[i] = PieceType.Empty;
                     bestScore = Mathf.Max(bestScore, score);
                     alpha = Mathf.Max(alpha, score);
+                    //剪枝
                     if (beta <= alpha)
                     {
                         break;
@@ -85,15 +92,16 @@ public class AI : MonoBehaviour
         else
         {
             int bestScore = int.MaxValue;
-            for (int i = 0; i < grides.Count; i++)
+            for (int i = 0; i < grides.Length; i++)
             {
                 if (grides[i] == PieceType.Empty)
                 {
-                    grides[i] = PieceType.X;
-                    int score = Minimax(grides, depth + 1, true, alpha, beta);
+                    grides[i] = PlayerPieceType; 
+                    int score = Minimax(grides, depth + 1, AIPieceType, alpha, beta);
                     grides[i] = PieceType.Empty;
                     bestScore = Mathf.Min(bestScore, score);
                     beta = Mathf.Min(beta, score);
+                    //剪枝
                     if (beta <= alpha)
                     {
                         break;
@@ -102,5 +110,7 @@ public class AI : MonoBehaviour
             }
             return bestScore;
         }
+
+
     }
 }

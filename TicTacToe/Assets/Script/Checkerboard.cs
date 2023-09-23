@@ -56,6 +56,13 @@ public class Checkerboard : MonoBehaviour
 
     public PieceType checkWin()
     {
+        PieceType[] pieceTypes = grides.ToArray();
+        return checkWin(pieceTypes);
+
+    }
+
+    public PieceType checkWin(PieceType[] grides)
+    {
         // ºÏ≤È––
         for (int i = 0; i < 7; i += 3)
         {
@@ -90,14 +97,25 @@ public class Checkerboard : MonoBehaviour
 
     public bool isFull()
     {
-        foreach(var gride in grides) 
+        return isFull(grides.ToArray());
+    }
+
+    public bool isFull(PieceType[] grides)
+    {
+        foreach (var gride in grides)
         {
-            if(gride == PieceType.Empty)
+            if (gride == PieceType.Empty)
             {
                 return false;
             }
         }
         return true;
+    }
+
+    public void setPiece(int idx)
+    {
+        Gride gride = checkerboardGrides[idx];
+        gride.onClick();
     }
 
 }

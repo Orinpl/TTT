@@ -14,7 +14,7 @@ public class RoundMgr
 
     public void resetRound()
     {
-        roundCnt = 0;
+        roundCnt = 1;
         playerCnt = Player.P1;
     }
 

@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
 
     public bool isDraw;
 
+    public UI UI;
+
     void Start()
     {
         if (Instance != null)
@@ -36,6 +38,7 @@ public class GameManager : MonoBehaviour
 
         isWin = false;
         isDraw = false;
+        startGame(Mode);
     }
 
     // Update is called once per frame
@@ -50,12 +53,33 @@ public class GameManager : MonoBehaviour
 
     public void startGame(Mode mode)
     {
-        if(mode == Mode.VS)
+        if (mode == Mode.VS)
         {
             RoundMgr.resetRound();
             playerCnt = RoundMgr.getCntPlayer();
 
         }
+        else if(mode== Mode.VS)
+        {
+            RoundMgr.resetRound();
+            playerCnt = RoundMgr.getCntPlayer();
+        }
+        StartCoroutine(initUIInfo());
+    }
+
+    IEnumerator initUIInfo()
+    {
+        yield return new WaitUntil(() => UI != null);
+        UI.setModeInfo(Mode);
+        UI.setRoundInfo(RoundMgr.getCntRound());
+        UI.setPlayerInfo(RoundMgr.getCntPlayer());
+        UI.setWinInfo(Player.None, true);
+    }
+
+    public void changeMode(Mode mode)
+    {
+        Mode = mode;
+        UI.setModeInfo(mode);
     }
 
     public void resetGame()
@@ -65,6 +89,7 @@ public class GameManager : MonoBehaviour
         isWin = false;
         isDraw = false;
         winner = Player.None;
+        StartCoroutine(initUIInfo());
     }
 
     public void exitGame()
@@ -77,6 +102,7 @@ public class GameManager : MonoBehaviour
         isWin = true;
         isDraw = false;
         Debug.Log(player + "win!");
+        UI.setWinInfo(player, false);
     }
 
     public void drawGame()
@@ -84,6 +110,7 @@ public class GameManager : MonoBehaviour
         isDraw = true;
         isWin = false;
         Debug.Log("ºÍ¾Ö£¡");
+        UI.setWinInfo(Player.None, false);
     }
 
     public bool checkWin()
@@ -125,7 +152,20 @@ public class GameManager : MonoBehaviour
         else
         {
             RoundMgr.nextRound();
-            Debug.Log("Player:" + RoundMgr.getCntPlayer());
+            if(Mode == Mode.VS)
+            {
+                Debug.Log("Player:" + RoundMgr.getCntPlayer());
+            }
+            else if (Mode == Mode.Single)
+            {
+                playerCnt = RoundMgr.getCntPlayer();
+                if (playerCnt == Player.P2)
+                {
+                    int nextPoint = AI.Instance.getNextPoint();
+                    Checkerboard.setPiece(nextPoint);
+                }
+            }
+            UI.setRoundInfo(RoundMgr.getCntRound());
         }
     }
 
